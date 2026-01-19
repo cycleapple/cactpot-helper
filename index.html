@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仙人微彩計算器 | FFXIV 工具箱</title>
+    <link rel="icon" href="https://xivapi.com/i/061000/061820_hr1.png" type="image/png">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="../" class="back-link">&larr; 返回工具箱</a>
+            <h1>仙人微彩計算器</h1>
+            <p class="subtitle">Mini Cactpot Helper</p>
+        </header>
+
+        <main>
+            <section class="game-section">
+                <div id="hint" class="hint">
+                    <span class="hint-step">Step 1</span>
+                    <span class="hint-text">輸入遊戲開始時揭開的數字</span>
+                </div>
+
+                <div class="game-board">
+                    <!-- Row 1: 5 top arrows -->
+                    <div class="line-btn" data-line="diag1"><span class="arrow">↘</span><span class="ev-label"></span></div>
+                    <div class="line-btn" data-line="col0"><span class="arrow">↓</span><span class="ev-label"></span></div>
+                    <div class="line-btn" data-line="col1"><span class="arrow">↓</span><span class="ev-label"></span></div>
+                    <div class="line-btn" data-line="col2"><span class="arrow">↓</span><span class="ev-label"></span></div>
+                    <div class="line-btn" data-line="diag2"><span class="arrow">↙</span><span class="ev-label"></span></div>
+
+                    <!-- Row 2: arrow + 3 cells -->
+                    <div class="line-btn" data-line="row0"><span class="arrow">→</span><span class="ev-label"></span></div>
+                    <div class="cell" data-index="0"></div>
+                    <div class="cell" data-index="1"></div>
+                    <div class="cell" data-index="2"></div>
+                    <div class="empty"></div>
+
+                    <!-- Row 3: arrow + 3 cells -->
+                    <div class="line-btn" data-line="row1"><span class="arrow">→</span><span class="ev-label"></span></div>
+                    <div class="cell" data-index="3"></div>
+                    <div class="cell" data-index="4"></div>
+                    <div class="cell" data-index="5"></div>
+                    <div class="empty"></div>
+
+                    <!-- Row 4: arrow + 3 cells -->
+                    <div class="line-btn" data-line="row2"><span class="arrow">→</span><span class="ev-label"></span></div>
+                    <div class="cell" data-index="6"></div>
+                    <div class="cell" data-index="7"></div>
+                    <div class="cell" data-index="8"></div>
+                    <div class="empty"></div>
+                </div>
+
+                <button id="resetBtn" class="reset-btn">重置</button>
+            </section>
+
+            <section id="bestChoice" class="best-choice hidden">
+                <h2>最佳選擇</h2>
+                <p id="bestLineName" class="best-line-name"></p>
+                <p id="bestLineEV" class="best-line-ev"></p>
+            </section>
+
+            <section class="reference-section">
+                <details class="reward-table-details">
+                    <summary>MGP 獎勵表</summary>
+                    <table class="reward-table">
+                        <thead>
+                            <tr><th>總和</th><th>MGP</th><th>總和</th><th>MGP</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>6</td><td class="mgp-high">10,000</td><td>16</td><td>72</td></tr>
+                            <tr><td>7</td><td>36</td><td>17</td><td>180</td></tr>
+                            <tr><td>8</td><td>720</td><td>18</td><td>119</td></tr>
+                            <tr><td>9</td><td>360</td><td>19</td><td>36</td></tr>
+                            <tr><td>10</td><td>80</td><td>20</td><td>306</td></tr>
+                            <tr><td>11</td><td>252</td><td>21</td><td class="mgp-medium">1,080</td></tr>
+                            <tr><td>12</td><td>108</td><td>22</td><td>144</td></tr>
+                            <tr><td>13</td><td>72</td><td>23</td><td class="mgp-medium">1,800</td></tr>
+                            <tr><td>14</td><td>54</td><td>24</td><td class="mgp-medium">3,600</td></tr>
+                            <tr><td>15</td><td>180</td><td></td><td></td></tr>
+                        </tbody>
+                    </table>
+                </details>
+            </section>
+        </main>
+
+        <footer>
+            <p>數據僅供參考，祝你好運！</p>
+        </footer>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h3>選擇數字</h3>
+            <div id="numberPicker" class="number-picker"></div>
+            <div class="modal-actions">
+                <button id="clearCell" class="clear-btn">清除</button>
+                <button id="closeModal" class="close-btn">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/constants.js"></script>
+    <script src="js/solver.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
