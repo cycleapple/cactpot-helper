@@ -70,12 +70,22 @@ class MiniCactpotApp {
 
     renderGrid() {
         const count = this.solver.getRevealedCount();
-        let suggestedIndex = -1;
+        let suggestedIndices = [];
 
-        if (count > 0 && count < 4) {
-            const scores = this.solver.calculateCellScores();
-            const best = scores.find(s => !s.revealed);
-            if (best) suggestedIndex = best.index;
+        if (count < 4) {
+            if (count === 0) {
+                // 預設推薦中間格子（涵蓋4條線）
+                suggestedIndices = [4];
+            } else {
+                const scores = this.solver.calculateCellScores();
+                const unrevealed = scores.filter(s => !s.revealed);
+                if (unrevealed.length > 0) {
+                    const bestScore = unrevealed[0].score;
+                    suggestedIndices = unrevealed
+                        .filter(s => s.score === bestScore)
+                        .map(s => s.index);
+                }
+            }
         }
 
         this.cells.forEach(cell => {
@@ -88,7 +98,7 @@ class MiniCactpotApp {
             if (value !== null) {
                 cell.textContent = value;
                 cell.classList.add('revealed');
-            } else if (i === suggestedIndex) {
+            } else if (suggestedIndices.includes(i)) {
                 cell.classList.add('suggested');
             }
         });
@@ -119,15 +129,21 @@ class MiniCactpotApp {
 
         if (count === 0) {
             step = 'Step 1';
-            text = '輸入遊戲開始時揭開的數字';
+            text = '建議先揭開中間格子';
         } else if (count < 4) {
             const scores = this.solver.calculateCellScores();
-            const best = scores.find(s => !s.revealed);
-            if (best) {
-                const row = Math.floor(best.index / 3) + 1;
-                const col = (best.index % 3) + 1;
+            const unrevealed = scores.filter(s => !s.revealed);
+            if (unrevealed.length > 0) {
+                const bestScore = unrevealed[0].score;
+                const bestCells = unrevealed.filter(s => s.score === bestScore);
                 step = 'Step 1';
-                text = `建議揭開閃爍格子 (第${row}列第${col}行)`;
+                if (bestCells.length === 1) {
+                    const row = Math.floor(bestCells[0].index / 3) + 1;
+                    const col = (bestCells[0].index % 3) + 1;
+                    text = `建議揭開閃爍格子 (第${row}列第${col}行)`;
+                } else {
+                    text = '建議揭開任一閃爍格子';
+                }
             } else {
                 step = 'Step 1';
                 text = `已輸入 ${count}/4`;
