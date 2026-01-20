@@ -177,63 +177,36 @@ class MiniCactpotSolver {
     }
 
     /**
-     * 計算揭開某格對整體期望值的貢獻度
-     * 用於建議下一步揭開哪格
+     * 計算揭開某格的優先度
+     * 策略：優先揭開涵蓋最多線的格子
+     * - 中間 (4): 4條線
+     * - 角落 (0,2,6,8): 3條線
+     * - 邊緣 (1,3,5,7): 2條線
      * @returns {object[]} 各格的評分
      */
     calculateCellScores() {
+        // 每格涵蓋的線數
+        const lineCounts = {
+            0: 3, 1: 2, 2: 3,
+            3: 2, 4: 4, 5: 2,
+            6: 3, 7: 2, 8: 3
+        };
+
         const scores = [];
-        const available = this.getAvailableNumbers();
 
         for (let i = 0; i < 9; i++) {
             if (this.grid[i] !== null) {
                 scores.push({ index: i, score: -1, revealed: true });
-                continue;
+            } else {
+                scores.push({
+                    index: i,
+                    score: lineCounts[i],
+                    revealed: false
+                });
             }
-
-            // 計算這格對各線的影響
-            let totalImprovement = 0;
-            let lineCount = 0;
-
-            // 找出包含這格的所有線
-            for (const [key, line] of Object.entries(LINES)) {
-                if (!line.cells.includes(i)) continue;
-                lineCount++;
-
-                // 模擬揭開這格後的期望值變化
-                const currentEV = this.calculateLineExpectation(key).expectedValue;
-
-                // 計算如果揭開這格，平均期望值會是多少
-                let sumEV = 0;
-                for (const num of available) {
-                    this.grid[i] = num;
-                    sumEV += this.calculateLineExpectation(key).expectedValue;
-                }
-                this.grid[i] = null;
-
-                const avgEVAfter = sumEV / available.length;
-
-                // 資訊增益（揭開後期望值的標準差越大，資訊量越高）
-                let variance = 0;
-                for (const num of available) {
-                    this.grid[i] = num;
-                    const ev = this.calculateLineExpectation(key).expectedValue;
-                    variance += Math.pow(ev - avgEVAfter, 2);
-                }
-                this.grid[i] = null;
-
-                const stdDev = Math.sqrt(variance / available.length);
-                totalImprovement += stdDev;
-            }
-
-            scores.push({
-                index: i,
-                score: totalImprovement / lineCount,
-                revealed: false
-            });
         }
 
-        // 按分數降序排序
+        // 按涵蓋線數降序排序（中間 > 角落 > 邊緣）
         scores.sort((a, b) => b.score - a.score);
 
         return scores;
@@ -256,7 +229,9 @@ class MiniCactpotSolver {
             if (bestCell) {
                 const row = Math.floor(bestCell.index / 3) + 1;
                 const col = (bestCell.index % 3) + 1;
-                return `建議揭開第 ${row} 列第 ${col} 行的格子，可獲得最多資訊。`;
+                const hint = bestCell.index === 4 ? '（中間涵蓋4條線）' :
+                             [0,2,6,8].includes(bestCell.index) ? '（角落涵蓋3條線）' : '';
+                return `建議揭開第 ${row} 列第 ${col} 行 ${hint}`;
             }
             return `還可以揭開 ${4 - revealedCount} 格。`;
         }
