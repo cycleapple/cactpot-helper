@@ -453,3 +453,28 @@ footer {
         font-size: 0.6rem;
     }
 }
+
+/* Support the author */
+.support-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    margin-top: 12px;
+    padding: 8px 16px;
+    border: 1px solid var(--accent-gold-bright);
+    border-radius: 8px;
+    background: var(--bg-secondary);
+    color: var(--accent-gold-bright);
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.support-button:hover {
+    background: var(--bg-tertiary);
+}
+
+.support-button:focus-visible {
+    outline: 2px solid var(--accent-gold-bright);
+    outline-offset: 3px;
+}
